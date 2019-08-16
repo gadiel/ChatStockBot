@@ -1,0 +1,20 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="form-group">
+    &nbsp;
+</div>
+
+<div id="chat">
+    <form id="frm-send-message" action="#">
+        <label for="message">Message:</label>
+        <input type="text" id="message" />
+        <input type="submit" id="send" value="Send" class="send" />
+    </form>
+    <div class="clear">
+    </div>
+    <ul id="messages"></ul>
+</div>

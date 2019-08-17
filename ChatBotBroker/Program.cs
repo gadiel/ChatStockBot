@@ -30,6 +30,24 @@ namespace ChatBotBroker
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
 
+                    var messageParts = message.Split('~');
+                    var bot = _botService.RecieveCommand(messageParts[1]);
+                    var botMessage = bot.ExecuteActions(messageParts[1]);
+                    var responseMessage = String.Format("{0}~{1}", bot.BotName, botMessage);
+
+                    channel.QueueDeclare(queue: "botresponsetosignalr",
+                                     durable: false,
+                                     exclusive: false,
+                                     autoDelete: false,
+                                     arguments: null);
+
+                    var responseBody = Encoding.UTF8.GetBytes(responseMessage);
+
+                    channel.BasicPublish(exchange: "",
+                                         routingKey: "botresponsetosignalr",
+                                         basicProperties: null,
+                                         body: responseBody);
+
                     Console.WriteLine(" [x] Received command {0}", message);
                 };
                 channel.BasicConsume(queue: "botbroker",

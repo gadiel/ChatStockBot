@@ -47,6 +47,10 @@ namespace ChatLogicLayer.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "Nick")]
+            public string Nick { get; set; }
         }
 
         public void OnGet(string returnUrl = null)
@@ -59,7 +63,7 @@ namespace ChatLogicLayer.Pages.Account
             ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, Nick = Input.Nick};
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

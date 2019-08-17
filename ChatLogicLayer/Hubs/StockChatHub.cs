@@ -31,7 +31,7 @@ namespace ChatLogicLayer.Hubs
             
             if (message.IsBotCommand())
             {
-                String.Format("{0}~{1}", username, message).SendToBotBroker();
+                message.SendToBotBroker();
             }
             else
             {

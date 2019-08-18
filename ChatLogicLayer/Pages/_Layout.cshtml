@@ -36,13 +36,6 @@
             </div>
         </div>
     </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2019 - Chat - Gadiel Ortez for Jobsity</p>
-        </footer>
-    </div>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -66,5 +59,13 @@
     </environment>
 
     @RenderSection("Scripts", required: false)
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; 2019 - Chat - Gadiel Ortez for Jobsity</p>
+        </footer>
+    </div>
 </body>
 </html>

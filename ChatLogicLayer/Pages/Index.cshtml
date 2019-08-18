@@ -9,19 +9,24 @@
 </div>
 
 <div id="chat">
+    <ul id="messages"></ul>
+    <div class="clear">
+    </div>
     <form id="frm-send-message" action="#">
         <label for="message">Message:</label>
         <input type="text" id="message" />
         <input type="submit" id="send" value="Send" class="send" />
     </form>
-    <div class="clear">
-    </div>
-    <ul id="messages"></ul>
 </div>
 
 <script src="lib/signalr/signalr.min.js"></script>
 
 <script>
+    $.get('/Index?handler=last50messages').done((messages) => {
+        messages.forEach((element) => {
+            appendLine(element.user_nick, element.message, element.date)
+        })
+    });
 
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/stockchat")
@@ -29,8 +34,8 @@
 
     connection.start().catch(err => console.error(err.toString()));
 
-    connection.on('Send', (nick, message) => {
-        appendLine(nick, message);
+    connection.on('Send', (nick, message, date) => {
+        appendLine(nick, message, date);
     });
 
     document.getElementById('frm-send-message').addEventListener('submit', event => {
@@ -42,7 +47,10 @@
         event.preventDefault();
     });
 
-    function appendLine(nick, message, color) {
+    function appendLine(nick, message, date) {
+        let dateElement = document.createElement('span');
+        dateElement.innerText = `[${date}] - `;
+
         let nameElement = document.createElement('strong');
         nameElement.innerText = `${nick}:`;
 
@@ -50,6 +58,7 @@
         msgElement.innerText = ` ${message}`;
 
         let li = document.createElement('li');
+        li.appendChild(dateElement);
         li.appendChild(nameElement);
         li.appendChild(msgElement);
 

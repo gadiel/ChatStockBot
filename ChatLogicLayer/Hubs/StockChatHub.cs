@@ -38,7 +38,7 @@ namespace ChatLogicLayer.Hubs
             {
                 await _applicationDbContext.ChatMessages.AddAsync(new ChatMessage { ApplicationUser = user, Message = message, CreationDate = DateTime.Now });
                 await _applicationDbContext.SaveChangesAsync();
-                await Clients.All.SendAsync("Send", user.Nick, message);
+                await Clients.All.SendAsync("Send", user.Nick, message, DateTime.Now);
             }
         }
     }

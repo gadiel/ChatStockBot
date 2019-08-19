@@ -14,6 +14,7 @@ using ChatLogicLayer.Hubs;
 using ChatLogicLayer.Services;
 using ChatLogicLayer.Extensions;
 using ChatLogicLayer.Data.Models;
+using ChatBot.Models;
 
 namespace ChatLogicLayer
 {
@@ -48,6 +49,8 @@ namespace ChatLogicLayer
             services.AddSignalR();
 
             services.AddSingleton<BotResponseConsumerRMQ>();
+
+            services.Configure<RabbitMQSettings>(Configuration.GetSection("RabbitMQ"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

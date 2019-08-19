@@ -7,6 +7,8 @@ using ChatLogicLayer.Data;
 using Microsoft.AspNetCore.Http;
 using ChatLogicLayer.Extensions;
 using ChatLogicLayer.Data.Models;
+using ChatBot.Models;
+using Microsoft.Extensions.Options;
 
 namespace ChatLogicLayer.Hubs
 {
@@ -16,9 +18,11 @@ namespace ChatLogicLayer.Hubs
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ApplicationDbContext _applicationDbContext;
+        private readonly RabbitMQSettings _rabbitMQSettings;
 
-        public StockChatHub(UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, ApplicationDbContext applicationDbContext)
+        public StockChatHub(UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, ApplicationDbContext applicationDbContext, IOptions<RabbitMQSettings> settings)
         {
+            _rabbitMQSettings = settings.Value;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
             _applicationDbContext = applicationDbContext;
@@ -29,7 +33,7 @@ namespace ChatLogicLayer.Hubs
             
             if (message.IsBotCommand())
             {
-                message.SendToBotBroker();
+                message.SendToBotBroker(_rabbitMQSettings);
             }
             else
             {

@@ -1,6 +1,7 @@
 ﻿using ChatBot.Models;
 using ChatLogicLayer.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -19,10 +20,16 @@ namespace ChatLogicLayer.Services
         private IModel channel { get; set; }
 
         private readonly IHubContext<StockChatHub> _stockChatHub;
+        private readonly RabbitMQSettings _rabbitMQSettings;
 
         public void Register()
         {
-            channel.QueueDeclare(queue: "botresponsetosignalr", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            channel.QueueDeclare(
+                queue: _rabbitMQSettings.BotResponseQueue.Name,
+                durable: _rabbitMQSettings.BotResponseQueue.Durable,
+                exclusive: _rabbitMQSettings.BotResponseQueue.Exclusive,
+                autoDelete: _rabbitMQSettings.BotResponseQueue.AutoDelete,
+                arguments: null);
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
@@ -35,7 +42,7 @@ namespace ChatLogicLayer.Services
                 _stockChatHub.Clients.All.SendAsync("Send", botResponse.BotName, botResponse.Message, DateTime.Now);
                 Console.WriteLine(" [x] Received {0}", message);
             };
-            channel.BasicConsume(queue: "botresponsetosignalr", autoAck: true, consumer: consumer);
+            channel.BasicConsume(queue: _rabbitMQSettings.BotResponseQueue.Name, autoAck: true, consumer: consumer);
         }
 
         public void Deregister()
@@ -43,12 +50,18 @@ namespace ChatLogicLayer.Services
             this.connection.Close();
         }
 
-        public BotResponseConsumerRMQ(IHubContext<StockChatHub> stockChatHub)
+        public BotResponseConsumerRMQ(IHubContext<StockChatHub> stockChatHub, IOptions<RabbitMQSettings> settings)
         {
-            factory = new ConnectionFactory() { HostName = "localhost" };
+            _rabbitMQSettings = settings.Value;
+            _stockChatHub = stockChatHub;
+
+            factory = new ConnectionFactory() {
+                HostName = _rabbitMQSettings.connection.HostName,
+                UserName = _rabbitMQSettings.connection.Username,
+                Password = _rabbitMQSettings.connection.Password
+            };
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
-            _stockChatHub = stockChatHub;
         }
     }
 

@@ -1,11 +1,8 @@
-﻿using ChatBotBroker.Bots;
+﻿using ChatBot.Models;
 using ChatBotBroker.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using System;
-using System.Text;
 
 namespace ChatBotBroker
 {
@@ -33,6 +30,12 @@ namespace ChatBotBroker
             collection.AddSingleton<ChatCommandConsumerRMQ>();
             collection.AddTransient<BotResponseProducerRMQ>();
             collection.AddSingleton<BotService>();
+
+            var configuration = new ConfigurationBuilder()
+                            .AddJsonFile("appsettings.json")
+                            .Build();
+
+            collection.Configure<RabbitMQSettings>(configuration.GetSection("RabbitMQ"));
 
             _serviceProvider = collection.BuildServiceProvider();
         }

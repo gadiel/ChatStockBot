@@ -1,4 +1,6 @@
-﻿using RabbitMQ.Client;
+﻿using ChatBot.Models;
+using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
@@ -13,10 +15,18 @@ namespace ChatBotBroker.Services
         private IModel channel { get; set; }
 
         private readonly BotService _botService;
+        private readonly RabbitMQSettings _rabbitMQSettings;
 
-        public ChatCommandConsumerRMQ(BotService botService)
+        public ChatCommandConsumerRMQ(BotService botService, IOptions<RabbitMQSettings> settings)
         {
-            factory = new ConnectionFactory() { HostName = "localhost" };
+            _rabbitMQSettings = settings.Value;
+
+            factory = new ConnectionFactory()
+            {
+                HostName = _rabbitMQSettings.connection.HostName,
+                UserName = _rabbitMQSettings.connection.Username,
+                Password = _rabbitMQSettings.connection.Password
+            };
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
             _botService = botService;
@@ -24,11 +34,12 @@ namespace ChatBotBroker.Services
 
         public void Register()
         {
-            channel.QueueDeclare(queue: "botbroker",
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
+            channel.QueueDeclare(
+                queue: _rabbitMQSettings.BotBrokerQueue.Name,
+                durable: _rabbitMQSettings.BotBrokerQueue.Durable,
+                exclusive: _rabbitMQSettings.BotBrokerQueue.Exclusive,
+                autoDelete: _rabbitMQSettings.BotBrokerQueue.AutoDelete,
+                arguments: null);
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
@@ -40,7 +51,7 @@ namespace ChatBotBroker.Services
 
                 _botService.HandleCommand(message);
             };
-            channel.BasicConsume(queue: "botbroker",
+            channel.BasicConsume(queue: _rabbitMQSettings.BotBrokerQueue.Name,
                                  autoAck: true,
                                  consumer: consumer);
         }

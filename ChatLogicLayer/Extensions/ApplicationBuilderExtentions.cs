@@ -7,11 +7,11 @@ namespace ChatLogicLayer.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
-        private static RabbitListener _listener { get; set; }
+        private static BotResponseConsumerRMQ _listener { get; set; }
 
         public static IApplicationBuilder UseRabbitListener(this IApplicationBuilder app)
         {
-            _listener = app.ApplicationServices.GetService<RabbitListener>();
+            _listener = app.ApplicationServices.GetService<BotResponseConsumerRMQ>();
 
             var lifetime = app.ApplicationServices.GetService<IApplicationLifetime>();
 

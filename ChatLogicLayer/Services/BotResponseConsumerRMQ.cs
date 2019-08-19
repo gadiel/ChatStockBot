@@ -1,5 +1,7 @@
-﻿using ChatLogicLayer.Hubs;
+﻿using ChatBot.Models;
+using ChatLogicLayer.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
@@ -8,9 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatLogicLayer.Messaging
+namespace ChatLogicLayer.Services
 {
-    public class RabbitListener
+    public class BotResponseConsumerRMQ
     {
         private ConnectionFactory factory { get; set; }
         private IConnection connection { get; set; }
@@ -27,8 +29,10 @@ namespace ChatLogicLayer.Messaging
             {
                 var body = ea.Body;
                 var message = Encoding.UTF8.GetString(body);
-                var messageParts = message.Split('~');
-                _stockChatHub.Clients.All.SendAsync("Send", messageParts[0], messageParts[1]);
+
+                var botResponse = JsonConvert.DeserializeObject<BotResponse>(message);
+
+                _stockChatHub.Clients.All.SendAsync("Send", botResponse.BotName, botResponse.Message, DateTime.Now);
                 Console.WriteLine(" [x] Received {0}", message);
             };
             channel.BasicConsume(queue: "botresponsetosignalr", autoAck: true, consumer: consumer);
@@ -39,7 +43,7 @@ namespace ChatLogicLayer.Messaging
             this.connection.Close();
         }
 
-        public RabbitListener(IHubContext<StockChatHub> stockChatHub)
+        public BotResponseConsumerRMQ(IHubContext<StockChatHub> stockChatHub)
         {
             factory = new ConnectionFactory() { HostName = "localhost" };
             connection = factory.CreateConnection();

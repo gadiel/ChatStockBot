@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ChatLogicLayer.Data;
-using ChatLogicLayer.Services;
 using ChatLogicLayer.Hubs;
-using ChatLogicLayer.Messaging;
+using ChatLogicLayer.Services;
+using ChatLogicLayer.Extensions;
 using ChatLogicLayer.Data.Models;
 
 namespace ChatLogicLayer
@@ -47,7 +47,7 @@ namespace ChatLogicLayer
 
             services.AddSignalR();
 
-            services.AddSingleton<RabbitListener>();
+            services.AddSingleton<BotResponseConsumerRMQ>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

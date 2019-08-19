@@ -4,11 +4,11 @@ using System.Text;
 
 namespace ChatBotBroker.Bots
 {
-    public class BotService
+    public class BotBroker
     {
         private List<IGenericBot> _bots { get; }
 
-        public BotService()
+        public BotBroker()
         {
             _bots = new List<IGenericBot>();
         }
@@ -31,22 +31,5 @@ namespace ChatBotBroker.Bots
             return new NotFoundCommandBot();
         }
 
-    }
-
-    public class NotFoundCommandBot : IGenericBot
-    {
-        public string BotName => "NotFoundBot";
-
-        public string ExecuteActions(string command)
-        {
-            return "Command not found";
-        }
-
-        public string BotCommandName => "notfound";
-
-        public bool VerifyCommandName(string command)
-        {
-            return true;
-        }
     }
 }

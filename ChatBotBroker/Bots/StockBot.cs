@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatBot.Models;
+using System;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 
@@ -9,16 +10,18 @@ namespace ChatBotBroker.Bots
         public string BotName => "StockBot";
         public string BotCommandName => "stock";
 
-        public string ExecuteActions(String command)
+        public BotResponse ExecuteActions(String command)
         {
             var argumentsMatch = obtainArgs(command);
+            var stockSymbol = argumentsMatch.Groups[1].Value.ToUpper();
 
-            var botResult = runBotActions(argumentsMatch.Groups[1].Value);
+            var botResult = runBotActions(stockSymbol);
             if(botResult.CompareTo("N/D") == 0)
             {
-                return $"Stock Symbol: {argumentsMatch.Groups[1].Value.ToUpper()} not found";
+                return new BotResponse() { BotName = BotName, Message = $"Stock Symbol: {stockSymbol} not found" };
             }
-            return String.Format("{0} quote is ${1} per share", argumentsMatch.Groups[1].Value.ToUpper(), botResult);
+
+            return new BotResponse() { BotName = BotName, Message = $"{stockSymbol} quote is ${botResult} per share" };
         }
 
         private string runBotActions(string stock_code)
@@ -46,14 +49,5 @@ namespace ChatBotBroker.Bots
         {
             return new Regex(@"^/" + BotCommandName+ @"=([\w\.]+)").Match(command);
         }
-    }
-
-    public interface IGenericBot
-    {
-        string BotCommandName { get; }
-
-        bool VerifyCommandName(string command);
-        string ExecuteActions(string command);
-        string BotName { get; }
     }
 }

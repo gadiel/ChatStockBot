@@ -32,7 +32,7 @@ namespace ChatBotBroker
 
                     Console.WriteLine(" [x] Received command {0}", message);
                     
-                    var bot = _botService.RecieveCommand(message);
+                    var bot = _botService.GetBotForCommand(message);
                     var botMessage = bot.ExecuteActions(message);
                     var responseMessage = String.Format("{0}~{1}", bot.BotName, botMessage);
 

@@ -18,7 +18,7 @@ namespace ChatBotBroker.Bots
             _bots.Add(bot);
         }
 
-        public IGenericBot RecieveCommand(string command)
+        public IGenericBot GetBotForCommand(string command)
         {
             foreach (var bot in _bots)
             {
@@ -42,10 +42,7 @@ namespace ChatBotBroker.Bots
             return "Command not found";
         }
 
-        public string GetBotCommandName()
-        {
-            return "notfound";
-        }
+        public string BotCommandName => "notfound";
 
         public bool VerifyCommandName(string command)
         {

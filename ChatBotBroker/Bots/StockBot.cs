@@ -7,12 +7,17 @@ namespace ChatBotBroker.Bots
     public class StockBot : IGenericBot
     {
         public string BotName => "StockBot";
+        public string BotCommandName => "stock";
 
         public string ExecuteActions(String command)
         {
             var argumentsMatch = obtainArgs(command);
 
             var botResult = runBotActions(argumentsMatch.Groups[1].Value);
+            if(botResult.CompareTo("N/D") == 0)
+            {
+                return $"Stock Symbol: {argumentsMatch.Groups[1].Value.ToUpper()} not found";
+            }
             return String.Format("{0} quote is ${1} per share", argumentsMatch.Groups[1].Value.ToUpper(), botResult);
         }
 
@@ -32,11 +37,6 @@ namespace ChatBotBroker.Bots
             return stockData[6];
         }
 
-        public string GetBotCommandName()
-        {
-            return "stock";
-        }
-
         public bool VerifyCommandName(string command)
         {
             return obtainArgs(command).Success;
@@ -44,13 +44,14 @@ namespace ChatBotBroker.Bots
 
         private Match obtainArgs(string command)
         {
-            return new Regex(@"^/" + GetBotCommandName() + @"=([\w\.]+)").Match(command);
+            return new Regex(@"^/" + BotCommandName+ @"=([\w\.]+)").Match(command);
         }
     }
 
     public interface IGenericBot
     {
-        string GetBotCommandName();
+        string BotCommandName { get; }
+
         bool VerifyCommandName(string command);
         string ExecuteActions(string command);
         string BotName { get; }

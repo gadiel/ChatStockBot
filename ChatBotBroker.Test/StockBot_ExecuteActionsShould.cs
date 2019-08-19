@@ -51,7 +51,7 @@ namespace ChatBotBroker.Test
         public void StockBotExecuteCommandResultShouldBe(string value)
         {
             var result = _stockBot.ExecuteActions(value);
-            Assert.Contains("quote is", result);
+            Assert.Contains("quote is", result.Message);
         }
 
         [Theory]
@@ -62,7 +62,7 @@ namespace ChatBotBroker.Test
         public void StockBotExecuteCommandResultShouldBeUnavailable(string value)
         {
             var result = _stockBot.ExecuteActions(value);
-            Assert.Contains("not found", result);
+            Assert.Contains("not found", result.Message);
         }
 
     }

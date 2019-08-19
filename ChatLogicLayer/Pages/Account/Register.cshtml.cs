@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using ChatLogicLayer.Data;
-using ChatLogicLayer.Services;
+using ChatLogicLayer.Data.Models;
 
 namespace ChatLogicLayer.Pages.Account
 {

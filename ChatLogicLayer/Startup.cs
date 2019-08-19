@@ -13,6 +13,7 @@ using ChatLogicLayer.Data;
 using ChatLogicLayer.Services;
 using ChatLogicLayer.Hubs;
 using ChatLogicLayer.Messaging;
+using ChatLogicLayer.Data.Models;
 
 namespace ChatLogicLayer
 {

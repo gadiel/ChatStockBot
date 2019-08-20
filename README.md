@@ -36,16 +36,29 @@ $ dotnet ef database update
 
 In order to run the ChatBotBroker and the WebApp I recommend configuring the solution to run `Multiple Startup Projects` in order to configure this right click the solution and go to `Properties` inside the dialog select CommonProperties > Startup Project. Select Multiple startup projects and set ChatBotBroker and ChatLogicLayer action to `Start`
 
+### Tests
+
+Tests can be run using the integrated Visual Studio tool or using the `dotnet` cli tool in a `PowerShell` terminal:
+
+```sh
+$ cd {test project folder}
+$ dotnet test
+```
+
 ### Projects
 
-| Project | Description | README |
-| ------ | ------ | ------ |
-| ChatLogicLayer | Web Application | [ChatLogicLayer/README.md][PlDb] |
-| ChatBotBroker | Console App with the Bot Broker Service | [ChatBotBroker/README.md][PlGh] |
-| ChatBotBroker.Test | xUnit Test Project | [ChatBotBroker.Test/README.md][PlGd] |
-| ChatBot.Models | Class Library | [ChatBot.Models/README.md][PlOd] |
+| Project | Description |
+| ------ | ------ |
+| ChatLogicLayer | Web Application | 
+| ChatBotBroker | Console App with the Bot Broker Service |  
+| ChatBotBroker.Test | xUnit Test Project |  
+| ChatBot.Models | Class Library |  
+
+
 
 ### TODOs
 
  - Add Repository Pattern for the EF DbContext
  - Add Signed SSL
+ - When moving to production RabbitMQ should have non-default username and password
+ - Find a way to have a single configuration file elegantly (I found a way but it's too hacky)

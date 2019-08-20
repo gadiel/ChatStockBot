@@ -17,6 +17,7 @@ namespace ChatBotBroker
             _serviceProvider.GetService<ChatCommandConsumerRMQ>()
                             .Register();
 
+            Console.WriteLine(" ChatBotBroker Microservice");
             Console.WriteLine(" Press ctrl+c to exit.");
             while (true)
             {

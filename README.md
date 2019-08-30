@@ -1,4 +1,4 @@
-# ChatStockBot - Jobsity .NET Challenge
+# ChatStockBot - .NET Core 2.0 
 
 This is a chat application written in C# .NET Core 2.0, using a ASP.NET Core Web Application implementing SignalR for realtime comunication and a Decoupled ChatBot Microservice that communicates with the WebApp using RabbitMQ. 
 # Features
